@@ -11,6 +11,8 @@
 		C6893F8129D35497004D5699 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6893F8029D35497004D5699 /* ContentView.swift */; };
 		C6893F8329D35499004D5699 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C6893F8229D35499004D5699 /* Assets.xcassets */; };
 		C6893F8629D35499004D5699 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C6893F8529D35499004D5699 /* Preview Assets.xcassets */; };
+		C6893F8F29D357DC004D5699 /* Hole.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6893F8E29D357DC004D5699 /* Hole.swift */; };
+		C6893F9129D3580D004D5699 /* Jewle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6893F9029D3580D004D5699 /* Jewle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +21,8 @@
 		C6893F8029D35497004D5699 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C6893F8229D35499004D5699 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C6893F8529D35499004D5699 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		C6893F8E29D357DC004D5699 /* Hole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hole.swift; sourceTree = "<group>"; tabWidth = 4; };
+		C6893F9029D3580D004D5699 /* Jewle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Jewle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +59,8 @@
 				C6893F8029D35497004D5699 /* ContentView.swift */,
 				C6893F8229D35499004D5699 /* Assets.xcassets */,
 				C6893F8429D35499004D5699 /* Preview Content */,
+				C6893F8E29D357DC004D5699 /* Hole.swift */,
+				C6893F9029D3580D004D5699 /* Jewle.swift */,
 			);
 			path = Mancala;
 			sourceTree = "<group>";
@@ -137,6 +143,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6893F8F29D357DC004D5699 /* Hole.swift in Sources */,
+				C6893F9129D3580D004D5699 /* Jewle.swift in Sources */,
 				C6893F8129D35497004D5699 /* ContentView.swift in Sources */,
 				C6893F7F29D35497004D5699 /* MancalaApp.swift in Sources */,
 			);

@@ -8,12 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var hole : Jewle
+    
+    
+    init(){
+        
+    }
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            
         }
         .padding()
     }
