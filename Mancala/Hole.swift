@@ -10,28 +10,45 @@ import  SwiftUI
 
 
 struct Hole : View{
-    @State public var jewle : [Jewle] = [];
-    public var sizeX : Int;
-    public var sizeY : Int;
+    var jewle : [Jewle];
+    var side : String;
     
-    init(sizeX: Int, sizeY: Int){
-        self.sizeX = sizeX
-        self.sizeY = sizeY
-        for i in 0...3{
+    init(side : String, jewles : Int){
+        var jewle = [Jewle]()
+        for i in 0..<jewles{
             jewle.append(Jewle(img: String(i)))
         }
+        self.jewle = jewle
+        self.side = side
     }
     public var body : some View{
         GeometryReader{geometry in
             Circle()
-                .frame(width : geometry.size.width, height: geometry.size.height)
+                .frame(width : geometry.size.width , height: geometry.size.height)
+                .overlay(
+                    Circle()
+                        .stroke((self.side == "A" ? Color.blue : Color.red), lineWidth: 3)
+                )
                 .overlay {
-                    ForEach(jewle) { jewle in
-                        Image(jewle.img)
+                    ForEach(self.jewle) { jewle in
+                        Circle()
+                            .frame(width: geometry.size.width/5, height: geometry.size.height/5)
+                            .foregroundColor(jewle.color)
                             .offset(x : jewle.locX, y : jewle.locY)
                     }
                 }
-            
+                .overlay {
+                    Text(String(jewle.count))
+                        .background(.black)
+                        .foregroundColor(.white)
+                        .frame(width:geometry.size.width/5, height:geometry.size.height/5)
+                        .rotationEffect(Angle(degrees: 90))
+                        .clipShape(Circle())
+                        .offset(x : -geometry.size.width/4 - 5, y : -geometry.size.height/4 - 5)
+                        
+                    
+                }
+                
         }
     }
 }

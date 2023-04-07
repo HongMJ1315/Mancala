@@ -8,20 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var hole : Jewle
-    
-    
-    init(){
-        
-    }
     var body: some View {
-        VStack {
-            
-        }
-        .padding()
+        Text("")
     }
 }
-
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()

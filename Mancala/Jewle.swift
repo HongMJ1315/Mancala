@@ -17,7 +17,7 @@ struct Jewle : Identifiable, Hashable{
     init(img : String){
         self.img = img + ".circle"
         self.color = Color(red: .random(in: 0...255)/255, green: .random(in: 0...255)/255, blue: .random(in: 0...255)/255)
-        self.locX = .random(in: 0...50)
-        self.locY = .random(in: 0...50)
+        self.locX = .random(in: -25...25)
+        self.locY = .random(in: -25...25)
     }
 }
