@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+enum nextState{
+    case END
+    case CONTINUE
+    
+}
 struct Game: View {
     @State var hole : [Hole]{
         willSet{
@@ -14,8 +19,51 @@ struct Game: View {
         }
     }
     @State var nowSide : Bool = false;
-    @State var isGameOver : Bool = false
+    @State var isGameOver : Bool = false{
+        willSet{
+            print(isGameOver)
+        }
+    }
     
+    func checkState() -> nextState{
+        var isdoneA : Bool = true;
+        var isdoneB : Bool = true;
+        for i in 0..<6{
+            if(hole[i].jewle.count != 0){
+                isdoneA = false
+                break;
+            }
+        }
+        for i in 7..<13{
+            if(hole[i].jewle.count != 0){
+                isdoneB = false
+                break;
+            }
+        }
+        if(isdoneA || isdoneB){
+            isGameOver = true
+            return nextState.END
+            
+        }
+        else {
+            return nextState.CONTINUE
+        }
+    }
+    func endGame() -> Void{
+        for i in 0..<6{
+            for j in hole[i].jewle{
+                hole[6].jewle.append(j)
+            }
+            hole[i].jewle.removeAll()
+        }
+        for i in 7..<13{
+            for j in hole[i].jewle{
+                hole[13].jewle.append(j)
+            }
+            hole[i].jewle.removeAll()
+        }
+        
+    }
     
     init(){
         var hole  = [Hole]()
@@ -32,8 +80,45 @@ struct Game: View {
     var body: some View {
         GeometryReader{ geometry in
             ZStack{
-                ZStack{
+                VStack{
+                    let ACount = hole[6].jewle.count
+                    let BCount = hole[13].jewle.count
+                    HStack{
+                        Text(ACount > BCount ? "You Win" : (ACount == BCount ? "Even" : "You Lose"))
+                            .rotationEffect(Angle(degrees: 90))
+                        Button {
+                            var hole  = [Hole]()
+                            for _ in 0..<6{
+                                hole.append(Hole(side : "A", jewles: 4))
+                            }
+                            hole.append(Hole(side : "A", jewles: 0))
+                            for _ in 7..<13{
+                                hole.append(Hole(side : "B", jewles: 4))
+                            }
+                            hole.append(Hole(side : "B", jewles: 0))
+                            self.hole = hole
+                            nowSide = false
+                            isGameOver = false
+                        
+                        } label: {
+                            Text("Restart")
+                        }
 
+                        Text(ACount > BCount ? "You Lose" : (ACount == BCount ? "Even" : "You Win"))
+                            .rotationEffect(Angle(degrees: 270))
+                        
+                        
+                    }
+                    .frame(width: geometry.size.width, height: geometry.size.height * 6 / 8)
+                    .background(.white)
+                    
+                    
+                    
+                }
+                .frame(width: geometry.size.width, height: geometry.size.height)
+                .opacity(isGameOver ? 1 : 0)
+                .zIndex(2)
+                VStack{
                     Text("Your Turn")
                         .rotationEffect(Angle(degrees: 90))
                         .padding()
@@ -46,6 +131,7 @@ struct Game: View {
                         .opacity(nowSide ? 1 : 0)
                     
                 }
+                .zIndex(1)
                 HStack{
                     Spacer()
                     VStack(spacing : 0){
@@ -88,10 +174,16 @@ struct Game: View {
                                                 }
                                             }
                                             if(i + tmpHole.count == 6){
+                                                if(checkState() == nextState.END){
+                                                    endGame()
+                                                }
                                                 return
                                             }
                                             guard i + tmpHole.count < 6 else{
                                                 nowSide = true
+                                                if(checkState() == nextState.END){
+                                                    endGame()
+                                                }
                                                 return
                                             }
                                             let mySide = i + tmpHole.count
@@ -103,6 +195,10 @@ struct Game: View {
                                                 hole[otherSide].jewle.removeAll()
                                             }
                                             nowSide = true
+                                            if(checkState() == nextState.END){
+                                                endGame()
+                                            }
+                                            
                                         }
                                 }
                             }
@@ -124,10 +220,16 @@ struct Game: View {
                                                 }
                                             }
                                             if(i + tmpHole.count == 13){
+                                                if(checkState() == nextState.END){
+                                                    endGame()
+                                                }
                                                 return
                                             }
                                             guard i + tmpHole.count < 13 else{
                                                 nowSide = false
+                                                if(checkState() == nextState.END){
+                                                    endGame()
+                                                }
                                                 return
                                             }
                                             let mySide = i + tmpHole.count
@@ -139,6 +241,10 @@ struct Game: View {
                                                 hole[otherSide].jewle.removeAll()
                                             }
                                             nowSide = false
+                                            if(checkState() == nextState.END){
+                                                endGame()
+                                            }
+                                            
                                         }
                                     
                                 }
@@ -166,6 +272,7 @@ struct Game: View {
                                     .offset(x : -geometry.size.width / 4)
                             }
                     }
+                    .zIndex(0)
                     Spacer()
                 }
                 
