@@ -13,11 +13,8 @@ enum nextState{
     
 }
 struct Game: View {
-    @State var hole : [Hole]{
-        willSet{
-           print( hole.count )
-        }
-    }
+    @Binding var isGameStart : Bool
+    @State var hole : [Hole]
     @State var nowSide : Bool = false;
     @State var isGameOver : Bool = false{
         willSet{
@@ -25,6 +22,19 @@ struct Game: View {
         }
     }
     
+    init(isGameStart : Binding<Bool>){
+        self._isGameStart = isGameStart
+        var hole  = [Hole]()
+        for _ in 0..<6{
+            hole.append(Hole(side : "A", jewles: 4))
+        }
+        hole.append(Hole(side : "A", jewles: 0))
+        for _ in 7..<13{
+            hole.append(Hole(side : "B", jewles: 4))
+        }
+        hole.append(Hole(side : "B", jewles: 0))
+        self._hole = State(initialValue: hole)
+    }
     func checkState() -> nextState{
         var isdoneA : Bool = true;
         var isdoneB : Bool = true;
@@ -41,7 +51,9 @@ struct Game: View {
             }
         }
         if(isdoneA || isdoneB){
-            isGameOver = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3){
+                isGameOver = true
+            }
             return nextState.END
             
         }
@@ -65,22 +77,35 @@ struct Game: View {
         
     }
     
-    init(){
-        var hole  = [Hole]()
-        for _ in 0..<6{
-            hole.append(Hole(side : "A", jewles: 4))
-        }
-        hole.append(Hole(side : "A", jewles: 0))
-        for _ in 7..<13{
-            hole.append(Hole(side : "B", jewles: 4))
-        }
-        hole.append(Hole(side : "B", jewles: 0))
-        self.hole = hole
-    }
+    
     var body: some View {
         GeometryReader{ geometry in
             ZStack{
                 VStack{
+                    Text("Please Roatte Your Phone")
+                }
+                .frame(width: geometry.size.width, height: geometry.size.height)
+                .background(.white)
+                .opacity(geometry.size.width > geometry.size.height ? 1 : 0)
+                .zIndex(4)
+                VStack{
+                    Button {
+                        isGameStart = false
+                    } label: {
+                        Text("Go Back")
+                            .foregroundColor(.black)
+                            .font(.system(size : 10))
+                        
+                    }
+                    .frame(width : 50, height : 50)
+                    .background(.gray)
+                }
+                .rotationEffect(Angle(degrees: 90))
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .padding(.horizontal, 10)
+                .zIndex(3)
+                VStack{
+                    
                     let ACount = hole[6].jewle.count
                     let BCount = hole[13].jewle.count
                     HStack{
@@ -111,9 +136,6 @@ struct Game: View {
                     }
                     .frame(width: geometry.size.width, height: geometry.size.height * 6 / 8)
                     .background(.white)
-                    
-                    
-                    
                 }
                 .frame(width: geometry.size.width, height: geometry.size.height)
                 .opacity(isGameOver ? 1 : 0)
@@ -281,8 +303,8 @@ struct Game: View {
     }
 }
 
-struct Game_Previews: PreviewProvider {
-    static var previews: some View {
-        Game()
-    }
-}
+//struct Game_Previews: PreviewProvider {
+//    static var previews: some View {
+//        Game()
+//    }
+//}

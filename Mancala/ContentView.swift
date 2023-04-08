@@ -8,8 +8,23 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var isGameStart : Bool = false;
+    @State var isInGuide : Bool = false;
+    
     var body: some View {
-        Text("")
+        VStack{
+            HStack{
+                Button {
+                    isGameStart = true
+                } label: {
+                    Text("Start")
+                }
+                .fullScreenCover(isPresented: $isGameStart){
+                    Game(isGameStart : $isGameStart)
+                }
+
+            }
+        }
     }
 }
 struct ContentView_Previews: PreviewProvider {

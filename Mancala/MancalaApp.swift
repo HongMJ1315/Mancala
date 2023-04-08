@@ -11,7 +11,7 @@ import SwiftUI
 struct MancalaApp: App {
     var body: some Scene {
         WindowGroup {
-            Game()
+            ContentView()
         }
     }
 }
