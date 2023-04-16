@@ -12,19 +12,29 @@ enum nextState{
     case CONTINUE
     
 }
+
+
 struct Game: View {
     @Binding var isGameStart : Bool
     @State var hole : [Hole]
-    @State var nowSide : Bool = false;
-    @State var isGameOver : Bool = false{
+    @State var pcSelect : Int = 7
+    @State var nowSide : Bool = false{
         willSet{
-            print(isGameOver)
+            print(nowSide)
         }
     }
-    
-    init(isGameStart : Binding<Bool>){
+    @State var isGameOver : Bool = false
+    @State var player : playerState
+    init(isGameStart : Binding<Bool>, player : playerState){
+        if(player == playerState.player){
+            print("player")
+        }
+        else{
+            print("pc")
+        }
         self._isGameStart = isGameStart
         var hole  = [Hole]()
+        self.player = player
         for _ in 0..<6{
             hole.append(Hole(side : "A", jewles: 4))
         }
@@ -62,6 +72,7 @@ struct Game: View {
         }
     }
     func endGame() -> Void{
+        nowSide = false
         for i in 0..<6{
             for j in hole[i].jewle{
                 hole[6].jewle.append(j)
@@ -77,7 +88,109 @@ struct Game: View {
         
     }
     
+    func tapEvenLeft(i : Int)->Void{
+        print("left")
+        if nowSide != false{
+            return
+        }
+        let tmpHole = hole[i].jewle
+        hole[i].jewle.removeAll()
+        for j in 0..<tmpHole.count{
+            if((j + i + 1)%14 == 13){
+                hole[(i + tmpHole.count + 1) % 14].jewle.append(tmpHole[j])
+            }
+            else{
+                hole[(j + i + 1)%14].jewle.append(tmpHole[j])
+            }
+        }
+        if(i + tmpHole.count == 6){
+            if(checkState() == nextState.END){
+                endGame()
+            }
+            return
+        }
+        guard i + tmpHole.count < 6 else{
+            nowSide = true
+            if(checkState() == nextState.END){
+                endGame()
+            }
+            return
+        }
+        let mySide = i + tmpHole.count
+        let otherSide = 13 - 1 - mySide
+        if(hole[mySide].jewle.count == 1){
+            for j in hole[otherSide].jewle{
+                hole[6].jewle.append(j)
+            }
+            hole[otherSide].jewle.removeAll()
+        }
+        nowSide = true
+        if(checkState() == nextState.END){
+            endGame()
+        }
+    }
     
+    func tapEvenRight(i : Int)->Void{
+        print("right")
+        if nowSide != true{
+            return;
+        }
+        let tmpHole = hole[i].jewle
+        hole[i].jewle.removeAll()
+        for j in 0..<tmpHole.count{
+            if((j + i + 1)%14 == 6){
+                hole[(i + tmpHole.count + 1) % 14].jewle.append(tmpHole[j])
+            }
+            else{
+                hole[(j + i + 1)%14].jewle.append(tmpHole[j])
+            }
+        }
+        if(i + tmpHole.count == 13){
+            if(checkState() == nextState.END){
+                endGame()
+            }
+            return
+        }
+        guard i + tmpHole.count < 13 else{
+            nowSide = false
+            if(checkState() == nextState.END){
+                endGame()
+            }
+            return
+        }
+        let mySide = i + tmpHole.count
+        let otherSide = 12 - mySide
+        if(hole[mySide].jewle.count == 1){
+            for j in hole[otherSide].jewle{
+                hole[13].jewle.append(j)
+            }
+            hole[otherSide].jewle.removeAll()
+        }
+        nowSide = false
+        if(checkState() == nextState.END){
+            endGame()
+        }
+        
+    }
+    
+    func runPc() -> Void{
+        print("runPc")
+        print(nowSide)
+        while(nowSide == true){
+            print("run")
+            pcSelect = .random(in: 7..<13)
+            if(checkState() == nextState.END){
+                endGame()
+            }
+            while(hole[pcSelect].jewle.count == 0){
+                print(pcSelect)
+                pcSelect = .random(in: 7..<13)
+            }
+            print(pcSelect)
+            tapEvenRight(i: pcSelect)
+            
+        }
+    }
     var body: some View {
         GeometryReader{ geometry in
             ZStack{
@@ -182,45 +295,10 @@ struct Game: View {
                                 ForEach(0..<6, id : \.self) { i in
                                     hole[i]
                                         .onTapGesture {
-                                            if nowSide != false{
-                                                return
+                                            tapEvenLeft(i: i)
+                                            if(player == playerState.pc){
+                                                runPc()
                                             }
-                                            let tmpHole = hole[i].jewle
-                                            hole[i].jewle.removeAll()
-                                            for j in 0..<tmpHole.count{
-                                                if((j + i + 1)%14 == 13){
-                                                    hole[(i + tmpHole.count + 1) % 14].jewle.append(tmpHole[j])
-                                                }
-                                                else{
-                                                    hole[(j + i + 1)%14].jewle.append(tmpHole[j])
-                                                }
-                                            }
-                                            if(i + tmpHole.count == 6){
-                                                if(checkState() == nextState.END){
-                                                    endGame()
-                                                }
-                                                return
-                                            }
-                                            guard i + tmpHole.count < 6 else{
-                                                nowSide = true
-                                                if(checkState() == nextState.END){
-                                                    endGame()
-                                                }
-                                                return
-                                            }
-                                            let mySide = i + tmpHole.count
-                                            let otherSide = 13 - 1 - mySide
-                                            if(hole[mySide].jewle.count == 1){
-                                                for j in hole[otherSide].jewle{
-                                                    hole[6].jewle.append(j)
-                                                }
-                                                hole[otherSide].jewle.removeAll()
-                                            }
-                                            nowSide = true
-                                            if(checkState() == nextState.END){
-                                                endGame()
-                                            }
-                                            
                                         }
                                 }
                             }
@@ -228,43 +306,8 @@ struct Game: View {
                                 ForEach(7..<13, id : \.self) { i in
                                     hole[i]
                                         .onTapGesture {
-                                            if nowSide != true{
-                                                return;
-                                            }
-                                            let tmpHole = hole[i].jewle
-                                            hole[i].jewle.removeAll()
-                                            for j in 0..<tmpHole.count{
-                                                if((j + i + 1)%14 == 6){
-                                                    hole[(i + tmpHole.count + 1) % 14].jewle.append(tmpHole[j])
-                                                }
-                                                else{
-                                                    hole[(j + i + 1)%14].jewle.append(tmpHole[j])
-                                                }
-                                            }
-                                            if(i + tmpHole.count == 13){
-                                                if(checkState() == nextState.END){
-                                                    endGame()
-                                                }
-                                                return
-                                            }
-                                            guard i + tmpHole.count < 13 else{
-                                                nowSide = false
-                                                if(checkState() == nextState.END){
-                                                    endGame()
-                                                }
-                                                return
-                                            }
-                                            let mySide = i + tmpHole.count
-                                            let otherSide = 12 - mySide
-                                            if(hole[mySide].jewle.count == 1){
-                                                for j in hole[otherSide].jewle{
-                                                    hole[13].jewle.append(j)
-                                                }
-                                                hole[otherSide].jewle.removeAll()
-                                            }
-                                            nowSide = false
-                                            if(checkState() == nextState.END){
-                                                endGame()
+                                            if(player == playerState.player){
+                                                tapEvenRight(i: i)
                                             }
                                             
                                         }

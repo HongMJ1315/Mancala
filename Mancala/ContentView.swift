@@ -7,22 +7,34 @@
 
 import SwiftUI
 
+enum playerState{
+    case pc
+    case player
+}
 struct ContentView: View {
-    @State var isGameStart : Bool = false;
+    @State var isGameStartPlayer : Bool = false;
+    @State var isGameStartPc : Bool = false;
     @State var isInGuide : Bool = false;
     
     var body: some View {
         VStack{
             HStack{
                 Button {
-                    isGameStart = true
+                    isGameStartPlayer = true
                 } label: {
-                    Text("Start")
+                    Text("PVP")
                 }
-                .fullScreenCover(isPresented: $isGameStart){
-                    Game(isGameStart : $isGameStart)
+                .fullScreenCover(isPresented: $isGameStartPlayer){
+                    Game(isGameStart : $isGameStartPlayer, player: playerState.player)
                 }
-
+                Button {
+                    isGameStartPc = true
+                } label: {
+                    Text("PVE")
+                }
+                .fullScreenCover(isPresented: $isGameStartPc){
+                    Game(isGameStart : $isGameStartPc, player: playerState.pc)
+                }
             }
         }
     }
