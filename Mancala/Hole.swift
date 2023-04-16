@@ -47,7 +47,7 @@ struct Hole : View{
                         .background(.black)
                         .foregroundColor(.white)
                         .frame(width:geometry.size.width/5, height:geometry.size.height/5)
-                        .rotationEffect(Angle(degrees: 90))
+                        .rotationEffect(Angle(degrees: 180))
                         .clipShape(Circle())
                         .offset(x : -geometry.size.width/4 - 5, y : -geometry.size.height/4 - 5)
                         

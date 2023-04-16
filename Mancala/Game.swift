@@ -24,22 +24,19 @@ struct Game: View {
         }
     }
     @State var isMoving : Double = 1
-    @State var movingJewle : Jewle = Jewle(img: String(0)){
-        willSet{
-            print("Jewle : ", movingJewle.locX, movingJewle.locY)
-        }
-    }
+    @State var movingJewle : Jewle = Jewle(img: String(0))
     @State var isGameOver : Bool = false
-    @State var player : playerState = playerState.player
+    @State var player : playerState = playerState.pc
     init(isGameStart : Binding<Bool>, player : playerState){
         if(player == playerState.player){
-            print("player")
+            print("select player")
         }
         else{
-            print("pc")
+            print("select pc")
         }
         self._isGameStart = isGameStart
-        self.player = player
+        self.nowSide = false
+        _player = State(initialValue: player)
         self.movingJewle = Jewle(img: String(0))
         movingJewle.locX = 50
         movingJewle.locY = 50
@@ -99,7 +96,6 @@ struct Game: View {
     }
     
     func tapEvenLeft(i : Int)->Void{
-        print("left")
         if nowSide != false{
             return
         }
@@ -143,7 +139,6 @@ struct Game: View {
     }
     
     func tapEvenRight(i : Int)->Void{
-        print("right")
         if nowSide != true{
             return;
         }
@@ -155,7 +150,7 @@ struct Game: View {
 //            movingJewle = tmpJewle
 //            movingJewle.locX = -tmpJewle.locX + hole[i].locX - hole[i].sizeY / 2.0
 //            movingJewle.locY = -tmpJewle.locY + hole[i].locY - hole[i].sizeY / 2.0
-            print(hole[i].locX, hole[i].locY, hole[i].sizeX, hole[i].sizeY)
+//            print(hole[i].locX, hole[i].locY, hole[i].sizeX, hole[i].sizeY)
             
             if((j + i + 1)%14 == 6){
                 hole[(i + tmpHole.count + 1) % 14].jewle.append(tmpJewle)
@@ -235,7 +230,7 @@ struct Game: View {
                 }
                 .frame(width: geometry.size.width, height: geometry.size.height)
                 .background(.white)
-                .opacity(geometry.size.width > geometry.size.height ? 1 : 0)
+                .opacity(geometry.size.width < geometry.size.height ? 1 : 0)
                 .zIndex(4)
                 VStack{
                     Button {
@@ -249,7 +244,7 @@ struct Game: View {
                     .frame(width : 50, height : 50)
                     .background(.gray)
                 }
-                .rotationEffect(Angle(degrees: 90))
+                .rotationEffect(Angle(degrees: 180))
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .padding(.horizontal, 10)
                 .zIndex(3)
@@ -257,9 +252,9 @@ struct Game: View {
                     
                     let ACount = hole[6].jewle.count
                     let BCount = hole[13].jewle.count
-                    HStack{
+                    VStack{
                         Text(ACount > BCount ? "You Win" : (ACount == BCount ? "Even" : "You Lose"))
-                            .rotationEffect(Angle(degrees: 90))
+                            .rotationEffect(Angle(degrees: 180))
                         Button {
                             var hole  = [Hole]()
                             for i in 0..<6{
@@ -276,14 +271,16 @@ struct Game: View {
                         
                         } label: {
                             Text("Restart")
+                                .rotationEffect(Angle(degrees: 180))
+                            Text("Restart")
                         }
 
                         Text(ACount > BCount ? "You Lose" : (ACount == BCount ? "Even" : "You Win"))
-                            .rotationEffect(Angle(degrees: 270))
+                            .rotationEffect(Angle(degrees: 0))
                         
                         
                     }
-                    .frame(width: geometry.size.width, height: geometry.size.height * 6 / 8)
+                    .frame(width: geometry.size.width  * 6 / 8, height: geometry.size.height)
                     .background(.white)
                 }
                 .frame(width: geometry.size.width, height: geometry.size.height)
@@ -291,23 +288,23 @@ struct Game: View {
                 .zIndex(2)
                 VStack{
                     Text("Your Turn")
-                        .rotationEffect(Angle(degrees: 90))
+                        .rotationEffect(Angle(degrees: 180))
                         .padding()
-                        .frame(height: geometry.size.height / 5)
+                        .frame(width: geometry.size.width / 5)
                         .opacity(nowSide ? 0 : 1)
                     Text("Your Turn")
-                        .rotationEffect(Angle(degrees: 270))
+                        .rotationEffect(Angle(degrees: 0))
                         .padding()
-                        .frame(height: geometry.size.height / 5)
+                        .frame(width: geometry.size.width / 5)
                         .opacity(nowSide ? 1 : 0)
                     
                 }
                 .zIndex(1)
-                HStack{
+                VStack{
                     Spacer()
-                    VStack(spacing : 0){
+                    HStack(spacing : 0){
                         RoundedRectangle(cornerRadius: 30)
-                            .frame(width : geometry.size.width * 2/3, height : geometry.size.height/8)
+                            .frame(width : geometry.size.width/8, height : geometry.size.height * 2/3)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 30)
                                     .stroke((hole[13].side == "A" ? Color.blue : Color.red), lineWidth: 3)
@@ -315,7 +312,7 @@ struct Game: View {
                             .overlay {
                                 ForEach(hole[13].jewle) { jewle in
                                     Circle()
-                                        .frame(height: geometry.size.height/40)
+                                        .frame(width: geometry.size.width/40)
                                         .foregroundColor(jewle.color)
                                         .offset(x : jewle.locX, y : jewle.locY)
                                 }
@@ -323,16 +320,18 @@ struct Game: View {
                             .overlay {
                                 Text(String(hole[13].jewle.count))
                                     .foregroundColor(.white)
-                                    .rotationEffect(Angle(degrees: 270))
-                                    .offset(x : geometry.size.width / 4)
+                                    .rotationEffect(Angle(degrees: 0))
+                                    .offset(y : geometry.size.height / 4)
                             }
-                        HStack(spacing : 0){
-                            VStack(spacing : 0){
+                        VStack(spacing : 0){
+                            HStack(spacing : 0){
                                 ForEach(0..<6, id : \.self) { i in
                                     hole[i]
                                         .onTapGesture {
                                             tapEvenLeft(i: i)
+                                            print("tap")
                                             if(player == playerState.pc){
+                                                print("run")
                                                 runPc()
                                             }
                                         }
@@ -349,7 +348,7 @@ struct Game: View {
                                        })
                                 }
                             }
-                            VStack(spacing : 0){
+                            HStack(spacing : 0){
                                 ForEach(7..<13, id : \.self) { i in
                                     hole[i]
                                         .onTapGesture {
@@ -374,7 +373,7 @@ struct Game: View {
                             .rotationEffect(Angle(degrees: 180))
                         }
                         RoundedRectangle(cornerRadius: 30)
-                            .frame(width : geometry.size.width * 2/3, height : geometry.size.height/8)
+                            .frame(width : geometry.size.width/8, height : geometry.size.height * 2/3)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 30)
                                     .stroke((hole[6].side == "A" ? Color.blue : Color.red), lineWidth: 3)
@@ -382,7 +381,7 @@ struct Game: View {
                             .overlay {
                                 ForEach(hole[6].jewle) { jewle in
                                     Circle()
-                                        .frame(height: geometry.size.height/40)
+                                        .frame(width: geometry.size.width/40)
                                         .foregroundColor(jewle.color)
                                         .offset(x : jewle.locX, y : jewle.locY)
                                 }
@@ -390,8 +389,8 @@ struct Game: View {
                             .overlay {
                                 Text(String(hole[6].jewle.count))
                                     .foregroundColor(.white)
-                                    .rotationEffect(Angle(degrees: 90))
-                                    .offset(x : -geometry.size.width / 4)
+                                    .rotationEffect(Angle(degrees: 180))
+                                    .offset(y : -geometry.size.height / 4)
                             }
                     }
                     .zIndex(0)

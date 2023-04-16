@@ -36,17 +36,17 @@ struct ContentView: View {
                     Game(isGameStart : $isGameStartPc, player: playerState.pc)
                 }
             }
-            HStack{
-                Button {
-                    isGameStartPlayer = true
-                } label: {
-                    Text("Guide")
-                }
-                .fullScreenCover(isPresented: $isGameStartPlayer){
-                    Game(isGameStart : $isGameStartPlayer, player: playerState.player)
-                }
-                
-            }
+//            HStack{
+//                Button {
+//                    isGameStartPlayer = true
+//                } label: {
+//                    Text("Guide")
+//                }
+//                .fullScreenCover(isPresented: $isGameStartPlayer){
+//                    Game(isGameStart : $isGameStartPlayer, player: playerState.player)
+//                }
+//                
+//            }
         }
     }
 }
