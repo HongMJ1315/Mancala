@@ -13,6 +13,7 @@
 		C6893F8629D35499004D5699 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C6893F8529D35499004D5699 /* Preview Assets.xcassets */; };
 		C6893F8F29D357DC004D5699 /* Hole.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6893F8E29D357DC004D5699 /* Hole.swift */; };
 		C6893F9129D3580D004D5699 /* Jewle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6893F9029D3580D004D5699 /* Jewle.swift */; };
+		C697091129EBFDF8006825A2 /* Gudie.swift in Sources */ = {isa = PBXBuildFile; fileRef = C697091029EBFDF8006825A2 /* Gudie.swift */; };
 		C6D655DD29D3E2ED008C4EF3 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D655DC29D3E2ED008C4EF3 /* Game.swift */; };
 /* End PBXBuildFile section */
 
@@ -24,6 +25,7 @@
 		C6893F8529D35499004D5699 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C6893F8E29D357DC004D5699 /* Hole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hole.swift; sourceTree = "<group>"; tabWidth = 4; };
 		C6893F9029D3580D004D5699 /* Jewle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Jewle.swift; sourceTree = "<group>"; };
+		C697091029EBFDF8006825A2 /* Gudie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gudie.swift; sourceTree = "<group>"; };
 		C6D655DC29D3E2ED008C4EF3 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -57,6 +59,7 @@
 		C6893F7D29D35497004D5699 /* Mancala */ = {
 			isa = PBXGroup;
 			children = (
+				C697091029EBFDF8006825A2 /* Gudie.swift */,
 				C6D655DC29D3E2ED008C4EF3 /* Game.swift */,
 				C6893F7E29D35497004D5699 /* MancalaApp.swift */,
 				C6893F8029D35497004D5699 /* ContentView.swift */,
@@ -150,6 +153,7 @@
 				C6D655DD29D3E2ED008C4EF3 /* Game.swift in Sources */,
 				C6893F9129D3580D004D5699 /* Jewle.swift in Sources */,
 				C6893F8129D35497004D5699 /* ContentView.swift in Sources */,
+				C697091129EBFDF8006825A2 /* Gudie.swift in Sources */,
 				C6893F7F29D35497004D5699 /* MancalaApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

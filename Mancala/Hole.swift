@@ -10,16 +10,21 @@ import  SwiftUI
 
 
 struct Hole : View{
+    var id : Int
     var jewle : [Jewle];
     var side : String;
-    
-    init(side : String, jewles : Int){
+    var locX : CGFloat = 0;
+    var locY : CGFloat = 0;
+    var sizeX : CGFloat = 0;
+    var sizeY : CGFloat = 0;
+    init(side : String, jewles : Int, id : Int){
         var jewle = [Jewle]()
         for i in 0..<jewles{
             jewle.append(Jewle(img: String(i)))
         }
         self.jewle = jewle
         self.side = side
+        self.id = id
     }
     public var body : some View{
         GeometryReader{geometry in

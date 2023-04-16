@@ -16,15 +16,21 @@ enum nextState{
 
 struct Game: View {
     @Binding var isGameStart : Bool
-    @State var hole : [Hole]
+    @State var hole : [Hole] = []
     @State var pcSelect : Int = 7
     @State var nowSide : Bool = false{
         willSet{
             print(nowSide)
         }
     }
+    @State var isMoving : Double = 1
+    @State var movingJewle : Jewle = Jewle(img: String(0)){
+        willSet{
+            print("Jewle : ", movingJewle.locX, movingJewle.locY)
+        }
+    }
     @State var isGameOver : Bool = false
-    @State var player : playerState
+    @State var player : playerState = playerState.player
     init(isGameStart : Binding<Bool>, player : playerState){
         if(player == playerState.player){
             print("player")
@@ -33,16 +39,20 @@ struct Game: View {
             print("pc")
         }
         self._isGameStart = isGameStart
-        var hole  = [Hole]()
         self.player = player
-        for _ in 0..<6{
-            hole.append(Hole(side : "A", jewles: 4))
+        self.movingJewle = Jewle(img: String(0))
+        movingJewle.locX = 50
+        movingJewle.locY = 50
+        movingJewle.color = Color(red: .random(in: 0...255)/255, green: .random(in: 0...255)/255, blue: .random(in: 0...255)/255)
+        var hole  = [Hole]()
+        for i in 0..<6{
+            hole.append(Hole(side : "A", jewles: 4, id: i))
         }
-        hole.append(Hole(side : "A", jewles: 0))
-        for _ in 7..<13{
-            hole.append(Hole(side : "B", jewles: 4))
+        hole.append(Hole(side : "A", jewles: 0, id: 6))
+        for i in 7..<13{
+            hole.append(Hole(side : "B", jewles: 4, id: i))
         }
-        hole.append(Hole(side : "B", jewles: 0))
+        hole.append(Hole(side : "B", jewles: 0, id: 13))
         self._hole = State(initialValue: hole)
     }
     func checkState() -> nextState{
@@ -96,12 +106,14 @@ struct Game: View {
         let tmpHole = hole[i].jewle
         hole[i].jewle.removeAll()
         for j in 0..<tmpHole.count{
+            let tmpJewle = tmpHole[j]
             if((j + i + 1)%14 == 13){
-                hole[(i + tmpHole.count + 1) % 14].jewle.append(tmpHole[j])
+                hole[(i + tmpHole.count + 1) % 14].jewle.append(tmpJewle)
             }
             else{
-                hole[(j + i + 1)%14].jewle.append(tmpHole[j])
+                hole[(j + i + 1)%14].jewle.append(tmpJewle)
             }
+            
         }
         if(i + tmpHole.count == 6){
             if(checkState() == nextState.END){
@@ -138,11 +150,18 @@ struct Game: View {
         let tmpHole = hole[i].jewle
         hole[i].jewle.removeAll()
         for j in 0..<tmpHole.count{
+            let tmpJewle = tmpHole[j]
+            isMoving = 1
+//            movingJewle = tmpJewle
+//            movingJewle.locX = -tmpJewle.locX + hole[i].locX - hole[i].sizeY / 2.0
+//            movingJewle.locY = -tmpJewle.locY + hole[i].locY - hole[i].sizeY / 2.0
+            print(hole[i].locX, hole[i].locY, hole[i].sizeX, hole[i].sizeY)
+            
             if((j + i + 1)%14 == 6){
-                hole[(i + tmpHole.count + 1) % 14].jewle.append(tmpHole[j])
+                hole[(i + tmpHole.count + 1) % 14].jewle.append(tmpJewle)
             }
             else{
-                hole[(j + i + 1)%14].jewle.append(tmpHole[j])
+                hole[(j + i + 1)%14].jewle.append(tmpJewle)
             }
         }
         if(i + tmpHole.count == 13){
@@ -194,6 +213,23 @@ struct Game: View {
     var body: some View {
         GeometryReader{ geometry in
             ZStack{
+//                VStack(spacing : 0){
+//                    HStack(spacing : 0){
+//                        Circle()
+//                            .frame(width: geometry.size.width/5, height: geometry.size.height/35)
+//                            .foregroundColor(movingJewle.color)
+//                            .overlay{
+//                                Text("#")
+//                            }
+//                            .offset(x : movingJewle.locX, y : movingJewle.locY)
+//                            .opacity(isMoving)
+//                        Spacer()
+//                    }
+//                    Spacer()
+//
+//                }
+//                .frame(width: geometry.size.width, height: geometry.size.height)
+//                .zIndex(5)
                 VStack{
                     Text("Please Roatte Your Phone")
                 }
@@ -226,14 +262,14 @@ struct Game: View {
                             .rotationEffect(Angle(degrees: 90))
                         Button {
                             var hole  = [Hole]()
-                            for _ in 0..<6{
-                                hole.append(Hole(side : "A", jewles: 4))
+                            for i in 0..<6{
+                                hole.append(Hole(side : "A", jewles: 4, id: i))
                             }
-                            hole.append(Hole(side : "A", jewles: 0))
-                            for _ in 7..<13{
-                                hole.append(Hole(side : "B", jewles: 4))
+                            hole.append(Hole(side : "A", jewles: 0, id: 6))
+                            for i in 7..<13{
+                                hole.append(Hole(side : "B", jewles: 4, id: i))
                             }
-                            hole.append(Hole(side : "B", jewles: 0))
+                            hole.append(Hole(side : "B", jewles: 0, id: 13))
                             self.hole = hole
                             nowSide = false
                             isGameOver = false
@@ -300,6 +336,17 @@ struct Game: View {
                                                 runPc()
                                             }
                                         }
+                                        .background(GeometryReader { holeGeometry in
+                                           Color.clear.onAppear {
+                                               if let holeIndex = self.hole.firstIndex(where: { $0.id == hole[i].id }) {
+                                                   self.hole[holeIndex].locX = holeGeometry.frame(in : .global).midX
+                                                   self.hole[holeIndex].locY = holeGeometry.frame(in : .global).midY
+                                                   self.hole[holeIndex].sizeX = holeGeometry.size.width
+                                                   self.hole[holeIndex].sizeY = holeGeometry.size.height
+
+                                               }
+                                           }
+                                       })
                                 }
                             }
                             VStack(spacing : 0){
@@ -309,8 +356,18 @@ struct Game: View {
                                             if(player == playerState.player){
                                                 tapEvenRight(i: i)
                                             }
-                                            
                                         }
+                                        .background(GeometryReader { holeGeometry in
+                                           Color.clear.onAppear {
+                                               if let holeIndex = self.hole.firstIndex(where: { $0.id == hole[i].id }) {
+                                                   self.hole[holeIndex].locX = holeGeometry.frame(in : .global).midX
+                                                   self.hole[holeIndex].locY = holeGeometry.frame(in : .global).midY
+                                                   self.hole[holeIndex].sizeX = holeGeometry.size.width
+                                                   self.hole[holeIndex].sizeY = holeGeometry.size.height
+
+                                               }
+                                           }
+                                       })
                                     
                                 }
                             }
