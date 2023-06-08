@@ -277,6 +277,7 @@ struct Game: View {
 
                         Text(ACount > BCount ? "You Lose" : (ACount == BCount ? "Even" : "You Win"))
                             .rotationEffect(Angle(degrees: 0))
+                            .opacity(player == playerState.pc ? 0 : 1)
                         
                         
                     }
@@ -398,6 +399,7 @@ struct Game: View {
                 }
                 
             }
+            .background(.cyan)
         }
     }
 }

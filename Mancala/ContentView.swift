@@ -17,36 +17,70 @@ struct ContentView: View {
     @State var isInGuide : Bool = false;
     
     var body: some View {
-        VStack{
-            HStack{
-                Button {
-                    isGameStartPlayer = true
-                } label: {
-                    Text("PVP")
+        GeometryReader{ geometry in
+            NavigationView {
+                ZStack{
+                    VStack{
+                        Text("Please Roatte Your Phone")
+                    }
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .background(.white)
+                    .opacity(geometry.size.width < geometry.size.height ? 1 : 0)
+                    .zIndex(4)
+                    VStack{
+                        Spacer()
+                        Image("IMG_0178")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: geometry.size.width * 0.7, height: geometry.size.height * 0.7)
+                        Spacer()
+                        HStack{
+                            Button {
+                                isGameStartPlayer = true
+                            } label: {
+                                Text("PVP")
+                            }
+                            .padding()
+                            .background(.blue)
+                            .cornerRadius(50)
+                            .foregroundColor(.white)
+                            .fullScreenCover(isPresented: $isGameStartPlayer){
+                                Game(isGameStart : $isGameStartPlayer, player: playerState.player)
+                            }
+                            Button {
+                                isGameStartPc = true
+                            } label: {
+                                Text("PVE")
+                            }
+                            .padding()
+                            .background(.blue)
+                            .cornerRadius(50)
+                            .foregroundColor(.white)
+                            .fullScreenCover(isPresented: $isGameStartPc){
+                                Game(isGameStart : $isGameStartPc, player: playerState.pc)
+                            }
+                            Button {
+                                isInGuide = true
+                                print("guide")
+                                
+                            } label: {
+                                Text("Guide")
+                            }
+                            .padding()
+                            .background(.blue)
+                            .cornerRadius(50)
+                            .foregroundColor(.white)
+                        }
+                    }
+                    .background{
+                        NavigationLink(destination: Gudie(isInGuide : $isInGuide), isActive: $isInGuide) {
+                            Text("")
+                        }
+                    }
                 }
-                .fullScreenCover(isPresented: $isGameStartPlayer){
-                    Game(isGameStart : $isGameStartPlayer, player: playerState.player)
-                }
-                Button {
-                    isGameStartPc = true
-                } label: {
-                    Text("PVE")
-                }
-                .fullScreenCover(isPresented: $isGameStartPc){
-                    Game(isGameStart : $isGameStartPc, player: playerState.pc)
-                }
+                .background(.cyan)
             }
-//            HStack{
-//                Button {
-//                    isGameStartPlayer = true
-//                } label: {
-//                    Text("Guide")
-//                }
-//                .fullScreenCover(isPresented: $isGameStartPlayer){
-//                    Game(isGameStart : $isGameStartPlayer, player: playerState.player)
-//                }
-//                
-//            }
+            
         }
     }
 }
